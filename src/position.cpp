@@ -42,6 +42,7 @@ namespace Zobrist {
   Key enpassant[FILE_NB];
   Key castling[CASTLING_RIGHT_NB];
   Key side, noPawns;
+  Key rule50[100];
 }
 
 namespace {
@@ -166,6 +167,10 @@ void Position::init() {
 
   Zobrist::side = rng.rand<Key>();
   Zobrist::noPawns = rng.rand<Key>();
+
+  for (int i = 0; i < 100; i++) {
+      Zobrist::rule50[i] = rng.rand<Key>();
+  }
 
   // Prepare the cuckoo tables
   std::memset(cuckoo, 0, sizeof(cuckoo));
@@ -736,6 +741,7 @@ void Position::do_move(Move m, StateInfo& newSt, bool givesCheck) {
   // Increment ply counters. In particular, rule50 will be reset to zero later on
   // in case of a capture or a pawn move.
   ++gamePly;
+  k ^= Zobrist::rule50[st->rule50];
   ++st->rule50;
   ++st->pliesFromNull;
 
@@ -798,6 +804,7 @@ void Position::do_move(Move m, StateInfo& newSt, bool givesCheck) {
 
       // Reset rule 50 counter
       st->rule50 = 0;
+      k ^= Zobrist::rule50[0];
   }
 
   // Update hash key
@@ -858,6 +865,7 @@ void Position::do_move(Move m, StateInfo& newSt, bool givesCheck) {
 
       // Reset rule 50 draw counter
       st->rule50 = 0;
+      k ^= Zobrist::rule50[0];
   }
 
   // Set capture piece
