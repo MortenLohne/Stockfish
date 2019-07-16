@@ -804,7 +804,6 @@ void Position::do_move(Move m, StateInfo& newSt, bool givesCheck) {
 
       // Reset rule 50 counter
       st->rule50 = 0;
-      k ^= Zobrist::rule50[0];
   }
 
   // Update hash key
@@ -865,11 +864,13 @@ void Position::do_move(Move m, StateInfo& newSt, bool givesCheck) {
 
       // Reset rule 50 draw counter
       st->rule50 = 0;
-      k ^= Zobrist::rule50[0];
   }
 
   // Set capture piece
   st->capturedPiece = captured;
+
+  // Add updated rule 50 counter to key
+  k ^= Zobrist::rule50[st->rule50];
 
   // Update the key with the final value
   st->key = k;
