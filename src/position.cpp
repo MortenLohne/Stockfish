@@ -403,6 +403,7 @@ void Position::set_state(StateInfo* si) const {
       si->key ^= Zobrist::side;
 
   si->key ^= Zobrist::castling[si->castlingRights];
+  si->key ^= Zobrist::rule50[si->rule50];
 
   for (Piece pc : Pieces)
       for (int cnt = 0; cnt < pieceCount[pc]; ++cnt)
@@ -1007,10 +1008,13 @@ void Position::do_null_move(StateInfo& newSt) {
       st->epSquare = SQ_NONE;
   }
 
+
   st->key ^= Zobrist::side;
   prefetch(TT.first_entry(st->key));
 
+  st->key ^= Zobrist::rule50[st->rule50];
   ++st->rule50;
+  st->key ^= Zobrist::rule50[st->rule50];
   st->pliesFromNull = 0;
 
   sideToMove = ~sideToMove;
@@ -1045,6 +1049,13 @@ Key Position::key_after(Move m) const {
 
   if (captured)
       k ^= Zobrist::psq[captured][to];
+
+  k ^= Zobrist::rule50[st->rule50];
+
+  if (captured || type_of(pc) == PAWN)
+      k ^= Zobrist::rule50[0];
+  else
+      k ^= Zobrist::rule50[st->rule50 + 1];
 
   return k ^ Zobrist::psq[pc][to] ^ Zobrist::psq[pc][from];
 }
