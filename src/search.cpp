@@ -198,13 +198,13 @@ int StatscoreCutoff = 22661;
 TUNE(StatscoreCutoff);
 
 int EvalCoeff3 = -256;
-TUNE(SetRange(-32, -512), EvalCoeff3);
+TUNE(SetRange(-512, -32), EvalCoeff3);
 
 int EvalCoeff2 = 2;
 TUNE(SetRange(1, 5), EvalCoeff2);
 
 int EvalCoeff1 = -30;
-TUNE(SetRange(-20, -40), EvalCoeff1);
+TUNE(SetRange(-40, -20), EvalCoeff1);
 
 int EvalCoeff0 = 225;
 TUNE(SetRange(150, 350), EvalCoeff0);
