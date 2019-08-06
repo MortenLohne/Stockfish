@@ -194,26 +194,17 @@ void Search::init() {
       Reductions[i] = int(23.4 * std::log(i));
 }
 
-int StatscoreCutoff = 22661;
-TUNE(StatscoreCutoff);
-
 int EvalCoeff3 = -256;
-TUNE(SetRange(-512, -32), EvalCoeff3);
+TUNE(SetRange(-512, -64), EvalCoeff3);
 
 int EvalCoeff2 = 2;
-TUNE(SetRange(1, 5), EvalCoeff2);
+TUNE(SetRange(1, 4), EvalCoeff2);
 
 int EvalCoeff1 = -30;
 TUNE(SetRange(-40, -20), EvalCoeff1);
 
 int EvalCoeff0 = 225;
 TUNE(SetRange(150, 350), EvalCoeff0);
-
-int DNR1 = 835;
-int DNR2 = 70;
-int DNR3 = 185;
-
-TUNE(SetDefaultRange, DNR1, DNR2, DNR3);
 
 /// Search::clear() resets search state to its initial value
 
@@ -817,7 +808,7 @@ namespace {
 
     if (   !PvNode
         && (ss-1)->currentMove != MOVE_NULL
-        && (ss-1)->statScore < StatscoreCutoff
+        && (ss-1)->statScore < 22661
         &&  eval >= beta
         &&  ss->staticEval >= beta
                               + (depth / ONE_PLY * depth / ONE_PLY * depth / EvalCoeff3)
@@ -831,7 +822,7 @@ namespace {
         assert(eval - beta >= 0);
 
         // Null move dynamic reduction based on depth and value
-        Depth R = ((DNR1 + DNR2 * depth / ONE_PLY) / 256 + std::min(int(eval - beta) / DNR3, 3)) * ONE_PLY;
+        Depth R = ((835 + 70 * depth / ONE_PLY) / 256 + std::min(int(eval - beta) / 185, 3)) * ONE_PLY;
 
         ss->currentMove = MOVE_NULL;
         ss->continuationHistory = &thisThread->continuationHistory[NO_PIECE][0];
