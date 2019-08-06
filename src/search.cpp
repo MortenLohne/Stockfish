@@ -194,12 +194,6 @@ void Search::init() {
       Reductions[i] = int(23.4 * std::log(i));
 }
 
-int EvalCoeff3 = -256;
-TUNE(SetRange(-512, -64), EvalCoeff3);
-
-int EvalCoeff2 = 2;
-TUNE(SetRange(1, 4), EvalCoeff2);
-
 int EvalCoeff1 = -30;
 TUNE(SetRange(-40, -20), EvalCoeff1);
 
@@ -811,10 +805,10 @@ namespace {
         && (ss-1)->statScore < 22661
         &&  eval >= beta
         &&  ss->staticEval >= beta
-                              + (depth / ONE_PLY * depth / ONE_PLY * depth / EvalCoeff3)
-                              + (depth / ONE_PLY * depth / EvalCoeff2)
-                              + EvalCoeff1 * depth
-                              + EvalCoeff0
+            - (depth / ONE_PLY * depth / ONE_PLY * depth >> 8)
+            + (depth / ONE_PLY * depth >> 1)
+            + EvalCoeff1 * depth
+            + EvalCoeff0
         && !excludedMove
         &&  pos.non_pawn_material(us)
         && (ss->ply >= thisThread->nmpMinPly || us != thisThread->nmpColor))
