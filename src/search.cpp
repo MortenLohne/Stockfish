@@ -313,6 +313,15 @@ void MainThread::search() {
   std::cout << sync_endl;
 }
 
+int evalConstTerm = -100;
+int evalLinearTerm = 10;
+int staticEvalConstTerm = 299;
+int staticEvalLinearTerm = -33;
+
+TUNE(SetRange(-300, 100), evalConstTerm);
+TUNE(SetRange(-10, 40), evalLinearTerm);
+TUNE(SetRange(100, 500), staticEvalConstTerm);
+TUNE(SetRange(-50, -10), staticEvalLinearTerm);
 
 /// Thread::search() is the main iterative deepening loop. It calls search()
 /// repeatedly with increasing depth until the allocated thinking time has been
@@ -797,8 +806,8 @@ namespace {
     if (   !PvNode
         && (ss-1)->currentMove != MOVE_NULL
         && (ss-1)->statScore < 22661
-        &&  eval >= beta + 15 * depth / ONE_PLY - 100
-        &&  ss->staticEval >= beta - 33 * depth / ONE_PLY + 299
+        &&  eval >= beta + evalLinearTerm * depth / ONE_PLY + evalConstTerm
+        &&  ss->staticEval >= beta + staticEvalLinearTerm * depth / ONE_PLY + staticEvalConstTerm
         && !excludedMove
         &&  pos.non_pawn_material(us)
         && (ss->ply >= thisThread->nmpMinPly || us != thisThread->nmpColor))
