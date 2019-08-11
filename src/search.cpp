@@ -797,8 +797,8 @@ namespace {
     if (   !PvNode
         && (ss-1)->currentMove != MOVE_NULL
         && (ss-1)->statScore < 22661
-        &&  eval >= beta + 15 * depth / ONE_PLY - 100
-        &&  ss->staticEval >= beta - 33 * depth / ONE_PLY + 299
+        &&  eval >= beta + 12 * depth / ONE_PLY - 103
+        &&  ss->staticEval >= beta - 33 * depth / ONE_PLY + 287
         && !excludedMove
         &&  pos.non_pawn_material(us)
         && (ss->ply >= thisThread->nmpMinPly || us != thisThread->nmpColor))
